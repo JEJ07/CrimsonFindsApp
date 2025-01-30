@@ -1,0 +1,1157 @@
+#: import SlideTransition kivy.uix.screenmanager.SlideTransition
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
+ScreenManager:
+    
+   # UserProfileScreen:
+    LoadingScreen:
+    
+    LoginScreen:
+    SignupScreen:
+    UserListScreen:
+    MessagingScreen:
+    MainScreen:
+  #  ProfileScreen:
+    UserProfileScreen:
+    PostItemScreen:
+    ItemLostScreen:
+    NotificationScreen:
+    AboutUsScreen:
+    EditProfileFinalScreen:
+
+
+<AboutUsScreen>:
+    name: 'AboutUs'   
+    BoxLayout:
+        orientation: "vertical"  
+    MDTopAppBar:
+        title: "ABOUT US"
+        pos_hint: {'top': 1}
+        left_action_items: [["arrow-left-circle-outline", lambda x: setattr(root.manager, 'current', 'main')]]
+        
+        elevation: 0
+        md_bg_color: 1, 1, 1, 1  # White background color
+        specific_text_color: 0, 0, 0, 1  # Black color for the title text
+        icon_color: 0, 0, 0, 1  # Black color for the icons
+
+    FloatLayout:
+        
+        Image:
+            source: "crimsonfinds.jpg"  # Replace with the path to your background image
+            size_hint: (0.8, 0.5)  # Center image with specific width and height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            allow_stretch: True
+            keep_ratio: True
+
+        MDLabel:
+            text: 'CrimsonFinds is an app that is exclusive for WMSU students that will offer a single, dedicated platform for lost and found items.'
+            halign: "center"
+            valign: "center"
+            size_hint: (0.8, None)  
+            height: "100dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            theme_text_color: "Custom"
+            text_color: 0,0,0, 1  # White text color for readability
+            font_style: "H6"
+            padding: [20, 10]
+
+
+
+
+
+<NotificationScreen>:
+    name:'notif'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+
+            title: "Notifications"
+            elevation: 0
+            md_bg_color: 1,1,1,1
+            specific_text_color: 0, 0, 0, 1  # Black color for the title text
+            icon_color: 0, 0, 0, 1  # Black color for the icons
+            left_action_items: [["arrow-left-circle-outline", lambda x: setattr(root.manager, 'current', 'main')]]
+        MDFlatButton:
+            text: "Refresh"
+            
+            on_release: root.fetch_notifications()
+        MDScrollView:
+            MDList:
+                id:notification_list
+                
+<ItemLostScreen>:
+    name: 'itemlost'
+    BoxLayout:
+        orientation: 'vertical'
+        MDTextField:
+            id: searchLost
+            height: "56dp"
+            hint_text: "Search lost items..."
+            size_hint_x: None
+            width: '300dp'
+            mode: "rectangle"
+            icon_right: "magnify"
+            on_text_validate: 
+                root.perform_search(self.text)# Search function logic
+                root.clear_fields()           
+            pos_hint: {"top": .1}
+            pos_hint: {"center_x": 0.5}
+
+            
+
+        ScrollView:
+            MDBoxLayout:
+                id: item_container
+                orientation: 'vertical'
+                padding: '10dp'
+                spacing: '10dp'
+                size_hint_y: None
+                height: self.minimum_height
+                # Center items
+                padding: [50, 50, 50, 50]  #  padding for centering
+                
+        MDFloatLayout:
+            size_hint_y: None
+            height: "56dp"
+    
+            MDBottomNavigation:
+                id: bottom_nav
+                text_color_normal: [0, 0, 0, 1]  # Normal text color
+                text_color_active: [0, 0, 1, 1]
+                pos_hint: {"bottom": 0}
+                padding: "0dp"
+                spacing: "0dp"
+                md_bg_color: 1, 1, 1, 1
+                
+                MDBottomNavigationItem:
+                    name: "home"
+                    icon: "home-outline"
+                    text: "Home"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press:           
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'main'
+                MDBottomNavigationItem:
+                    name:"ItemLost"
+                    icon: "help-box-multiple-outline"
+                    text: "Lost Items"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'itemlost'
+                MDBottomNavigationItem:
+                    name:"PostItemScreen"
+                    icon: "plus-circle-outline"
+                    text: "Post Item" 
+                    size_hint_y: None
+                    height: "56dp"  
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'post'  
+                
+                MDBottomNavigationItem:
+                    name:"message"
+                    icon: "message-reply-text-outline"
+                    text: "Messages"
+                    size_hint_y: None
+                    height: "56dp" 
+                    on_tab_press:
+                        root.manager.transition = NoTransition()
+                        root.manager.current = 'user_list'
+                            
+<PostItemScreen>:
+    name:'post'
+    selected_type: None
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: 0
+        padding: 0
+        
+        MDCard:
+            id: 'imgcard'
+            size_hint: (1, None)
+            size: "380dp", "300dp"
+            radius: [20, 20, 20, 20]
+            elevation: 0
+            md_bg_color: [0.9, 0.9, 0.9, 1]
+            FloatLayout:
+                Image:
+                    id: img
+                    source:""
+                    size_hint: (1, 1)  # Adjust this to fit your needs
+                    allow_stretch: True  # Allows the image to stretch to fill the space
+                    keep_ratio: False # Maintains the aspect ratio
+                    
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                MDIconButton:
+                    icon: "close"  # "X" icon
+                    size_hint: None, None
+                    size: "32dp", "32dp"
+                    pos_hint: {"right": 1, "center_y": 0.9}  # Position at the top right corner
+                    theme_icon_color: "Custom"
+                    icon_color: 0, 0, 0, 1  # Red color for the "X" icon
+                    on_release: root.reset_img()  # Call a function to remove the image
+                    opacity: 1 if img.source else 0    
+                    
+                    
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: "48dp"
+            spacing: "10dp"    
+            canvas.before:
+                Color:
+                    rgba: 1,1,1, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    
+            MDIconButton:
+                icon: "plus"
+                size_hint: None, None
+                size: "48dp", "48dp"
+                theme_icon_color: "Secondary"
+                theme_text_color: "Hint"
+                on_release: root.file_chooser()
+            MDLabel:
+                text: "Add Attachment"
+                size_hint_x: None
+                height: "48dp"
+                halign: "center"
+                valign: "middle"
+                theme_text_color: "Hint"
+            MDLabel:
+                id: img_error_label
+                text: ""
+                theme_text_color: "Error"  # Set text color to indicate an error
+                size_hint_y: None
+                height: "20dp"
+                halign: "center"
+                valign: "middle" 
+                
+        MDBoxLayout:
+            orientation: 'horizontal'
+            spacing: 0
+            size_hint_y: None
+            height: "20dp"
+            MDLabel:
+                text: "Select Type:"
+                size_hint_x: None
+                width: "110dp"
+                theme_text_color: "Primary"
+                valign: "center"
+                
+            # "LOST" RadioButton
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint_x: None
+                width: "100dp"
+                spacing: 10
+                
+                MDLabel:
+                    text: "LOST"
+                    valign: "center"
+                    size_hint_x: None
+                    width: "50dp"
+                MDCheckbox:
+                    id: lost_checkbox
+                    group: "status"
+                    on_active: root.set_item_type('LOST')  # Function to set item typ 
+                    
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: 10  # Adds space between FOUND label and checkbox
+                size_hint_x: None
+                width: "100dp"
+                
+                MDLabel:
+                    text: "FOUND"
+                    valign: "center"
+                    size_hint_x: None
+                    width: "60dp"
+                MDCheckbox:
+                    id: found_checkbox
+                    group: "status"
+                    on_active: root.set_item_type('FOUND')  # Function to set item type
+                    
+        MDCard:            
+            id: 'posttextfield'
+            elevation: 0
+            md_bg_color: [1,1,1,1] 
+            padding: "10dp"
+            size_hint_y: None    
+            height: "300dp"   
+            
+            MDFloatLayout:
+                MDTextField:
+                    id: title
+                    hint_text: "Title"
+                    size_hint_x: 1  
+                    size_hint_y: None
+                    mode: "rectangle"
+                    height: "40dp"
+                    pos_hint: {"center_x": .5, "center_y": .9}  # Center horizontally and adjust vertical position
+                    helper_text:""
+                    helper_text_mode:"on_error"
+                
+                MDTextField:
+                    id: desc
+                    hint_text: "Description"
+                    size_hint_x: 1
+                    size_hint_y: None
+                    mode:"rectangle"
+                    multiline: True
+                    height: "100dp"
+                    pos_hint: {"center_x": .5, "center_y": .70}  # Center horizontally and position below the title
+                    helper_text:""
+                    helper_text_mode:"on_error"
+                MDTextField:
+                    id: loc
+                    hint_text: "Location last seen"
+                    size_hint_x: 1
+                    size_hint_y: None
+                    mode:"rectangle"
+                    height:"80dp"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    helper_text:""
+                    helper_text_mode:"on_error"
+                MDTextField:
+                    id: date
+                    hint_text: "Date"
+                    size_hint_x: 1
+                    size_hint_y: None
+                    mode: "rectangle"
+                    pos_hint: {"center_x": .5, "center_y": .3} 
+                    helper_text: ""
+                    helper_text_mode: "on_error"
+                    on_focus: if self.focus: root.show_date_picker()
+                MDRaisedButton:
+                    text: 'POST'
+                    size_hint_x: None
+                    width: "200dp"  # 
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1  # White text color 
+                    md_bg_color: "red"  # bg color
+                    elevation: 1  
+                    pos_hint: {"center_x": .5, "center_y": .07} 
+                    on_release: app.root.get_screen('post').post_item_notif(app.current_user_id)
+        MDFloatLayout:
+            size_hint_y: None
+            height: "56dp"                
+            MDBottomNavigation:
+                id: bottom_nav
+                text_color_normal: [0, 0, 0, 1]  # Normal text color
+                text_color_active: [0, 0, 1, 1]
+                pos_hint: {"bottom": 0}
+                padding: "0dp"
+                spacing: "0dp"
+                md_bg_color: 1, 1, 1, 1            
+                        
+                MDBottomNavigationItem:
+                    name: "home"
+                    icon: "home-outline"
+                    text: "Home"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press: 
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'main'
+                MDBottomNavigationItem:
+                    name:"ItemLostScreen"
+                    icon: "help-box-multiple-outline"
+                    text: "Item Lost"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'itemlost'
+                MDBottomNavigationItem:
+                    name:"PostItemScreen"
+                    icon: "plus-circle-outline"
+                    text: "Post Item" 
+                    size_hint_y: None
+                    height: "56dp"  
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'post'  
+                
+                MDBottomNavigationItem:
+                    name:"message"
+                    icon: "message-reply-text-outline"
+                    text: "Messages"
+                    size_hint_y: None
+                    height: "56dp" 
+                    on_tab_press:
+                        root.manager.transition = NoTransition()
+                        root.manager.current = 'user_list'        
+                            
+                    
+<UserProfileScreen>:
+    name: 'user_profile'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(10)
+        canvas.before:
+            Color:
+                rgba: 0.9, 0.9, 0.9, 1  
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(140)  # Adjust height to fit image and label
+            pos_hint: {'center_x': 0.5}        
+            Image:
+                id: profile_picture
+                source: 'default.png'  
+                size_hint: None, None
+                size: dp(100), dp(100)
+                pos_hint: {'center_x': 0.5}
+                allow_stretch: True
+                keep_ratio: True
+                # Set a circle mask
+                canvas.before:
+                    StencilPush
+                    Ellipse:
+                        pos: self.pos
+                        size: self.size
+                    StencilUse
+                canvas.after:
+                    StencilUnUse
+                    StencilPop
+            MDLabel:
+                id: get_username
+                text: 'Blank'  # Display the username from current user
+                font_style: 'H6'
+                size_hint: None, None
+                height: self.texture_size[1] + dp(10) 
+                pos_hint: {"center_x": 0.5, "y": 0.2}
+                width: dp(180)
+                max_lines: 1
+                text_size: self.width, None
+                halign: "center"
+        
+        # User Info Box
+        MDCard:
+            md_bg_color: [1, 1, 1, 1]  # Brown color
+            padding: dp(10)
+            spacing: dp(10)
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: dp(10)
+
+                # Name
+                MDLabel:
+                    id: get_name
+                    text: "Name: "
+                    theme_text_color: "Primary"
+                
+                # Email
+                MDLabel:
+                    id: email_label
+                    text: "Email: " 
+                    theme_text_color: "Primary"
+                
+                # Birthday
+                MDLabel:
+                    id: get_birthday
+                    text: "Birthday: " 
+                    theme_text_color: "Primary"
+                
+                # College
+                MDLabel:
+                    id: get_college
+                    text: "College: " #+ app.current_user['college'] if app.current_user.get('college') else "College: Not Set"
+                    theme_text_color: "Primary"
+
+        # Button to edit profile or save changes
+        MDRaisedButton:
+            text: "Edit Profile"
+            md_bg_color: [1,0,0,1]
+            pos_hint: {"center_x": 0.5}
+            on_release: app.switch_to_edit_profile()  
+        MDRaisedButton:
+            text: "Home"
+            pos_hint: {"center_x": 0.5}
+            md_bg_color: [1,0,0,1]
+            on_release: root.manager.current ='main' 
+
+<EditProfileFinalScreen>:
+    name: 'edit_profile'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(10)
+
+        MDTopAppBar:
+            title: "Edit Profile"
+            left_action_items: [["arrow-left-circle-outline", lambda x: setattr(root.manager, 'current', 'user_profile')]]
+            size_hint_y: None
+            height: dp(56)
+            size_hint_x: 1 
+            md_bg_color: [1, 1, 1, 1]  # White background color
+            specific_text_color: [0, 0, 0, 1]  # Black color for the title text
+            elevation: 0
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(590)
+            spacing: dp(10)
+            padding: dp(20)
+            
+            Image:
+                id: edit_profile_picture
+                source: 'default.png'  # Default image path
+                size_hint: None, None
+                size: dp(150), dp(150)  # Size of the image
+                allow_stretch: True
+                keep_ratio: True
+                pos_hint: {'center_x': 0.5, "center_y": 0.5}
+            MDRaisedButton:
+                text: "Change Picture"
+                size_hint: None, None
+                width: dp(120)
+                md_bg_color: [1,0,0,1]
+                pos_hint: {'center_x': 0.5, "center_y": 0.5}
+                on_release: 
+                    root.file_chooser()        
+            MDTextField:
+                id: edit_name
+                hint_text: "Name"
+                size_hint_y: None
+                height: dp(40)
+
+            MDTextField:
+                id: edit_email
+                hint_text: "Email"
+                size_hint_y: None
+                height: dp(40)
+
+            MDTextField:
+                id: edit_birthday
+                hint_text: "Birthday"
+                size_hint_y: None
+                height: dp(40)
+                on_focus: if self.focus: root.show_date_picker()
+            MDTextField:
+                id: edit_college
+                hint_text: "College"
+                size_hint_y: None
+                height: dp(40)
+ 
+            MDRaisedButton:
+                text: "Save Changes"
+                on_release: app.save_profile_changes()
+                md_bg_color: [1,0,0,1]
+
+
+
+<ProfileScreen>:
+    name: 'Profile'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(10)
+        Image:
+            source: 'img/kaorukosmol.jpg'  # Replace with the user's profile image path
+            size_hint: None, None
+            size: dp(100), dp(100)
+            pos_hint: {'center_x': 0.5}
+            allow_stretch: True
+            keep_ratio: True
+            # Set a circle mask
+            canvas.before:
+                PushMatrix
+                Rotate:
+                    angle: 0
+                    origin: self.center
+                # Draw the circle
+                Ellipse:
+                    pos: self.x, self.y
+                    size: self.size
+            canvas.after:
+                PopMatrix
+        MDLabel:
+            text: 'Emz'  # This should be replaced with the actual username from your database
+            halign: 'center'
+            font_style: 'H6'
+            size_hint_y: None
+            height: self.texture_size[1]
+            theme_text_color: 'Primary'
+            
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(150)
+            md_bg_color: [0.5, 0.25, 0.1, 1]  # Brown color
+            MDLabel:
+                text: 'Name: '# + (root.name if root.name else 'Loading...')
+                halign: 'left'
+                theme_text_color: 'Primary'
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            MDLabel:
+                text: 'Email: ' #+ (root.email if root.email else 'Loading...')
+                halign: 'left'
+                theme_text_color: 'Primary'
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            MDLabel:
+                text: 'Birthday: '# + (root.birthday if root.birthday else 'Loading...')
+                halign: 'left'
+                theme_text_color: 'Primary'
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            MDLabel:
+                text: 'College: '# + (root.college if root.college else 'Loading...')
+                halign: 'left'
+                theme_text_color: 'Primary'
+                size_hint_y: None
+                height: self.texture_size[1]
+                
+        MDRaisedButton:
+            text: "Back"
+            pos_hint: {"center_x": 0.5}
+            on_release:
+                root.manager.transition = NoTransition()
+                root.manager.current = 'main'
+
+<LoadingScreen>:
+    name:'loading'
+    FloatLayout:
+            
+        Video:
+            id: video
+            source: 'giphy.mp4'
+            state: 'play'
+            allow_stretch: True
+            options: {'eos': 'loop'}
+            size_hint: 1,1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+            
+        ProgressBar:
+            id: progress_bar
+            min: 0
+            max: 1          
+            size_hint_x: .8
+            pos_hint: {'center_x': 0.5, 'center_y': 0.16}
+        MDRaisedButton:
+            text:"ENTER"
+            pos_hint: {"center_x": 0.5, 'center_y': .09}
+            on_press: root.press_it() 
+            md_bg_color: [1,0,0,1]
+            on_release: root.manager.current = 'login'
+            
+<MainScreen>:
+    name: 'main'
+    MDNavigationLayout:
+        ScreenManager:
+            Screen:
+                BoxLayout:                    
+                    orientation: 'vertical'
+                    MDTopAppBar:
+                        title: 'CrimsonFinds'
+                        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                        right_action_items: [["bell", lambda x: setattr(root.manager, 'current', 'notif')]]
+                        elevation: 0
+                        md_bg_color: 1, 1, 1, 1  # White background color
+                        specific_text_color: 0, 0, 0, 1  # Black color for the title text
+                        icon_color: 0, 0, 0, 1  # Black color for the icons
+                        height: "56dp"
+                        
+                    ScrollView:
+                        id: scroll_view    
+                        pos_hint: {"top": 0.9}  # Position below the TopAppBar
+                        do_scroll_x: False
+                        do_scroll_y: True
+                        GridLayout:
+                            id: item_grid 
+                            cols:2                          
+                            padding: "10dp"
+                            spacing: "10dp"
+                            size_hint_y: None
+                            height: self.minimum_height 
+                            
+                                                                    
+                    MDFloatLayout:
+                        size_hint_y: None
+                        height: "56dp"
+                
+                        MDBottomNavigation:
+                            id: bottom_nav
+                            text_color_normal: [0, 0, 0, 1]  # Normal text color
+                            text_color_active: [0, 0, 1, 1]
+                            pos_hint: {"bottom": 0}
+                            padding: "0dp"
+                            spacing: "0dp"
+                            md_bg_color: 1, 1, 1, 1
+                            
+                            MDBottomNavigationItem:
+                                name: "home"
+                                icon: "home-outline"
+                                text: "Home"
+                                size_hint_y: None
+                                height: "56dp"
+                                on_tab_press: app.set_home_screen()
+                            MDBottomNavigationItem:
+                                name:"ItemLostScreen"
+                                icon: "help-box-multiple-outline"
+                                text: "Lost Items"
+                                size_hint_y: None
+                                height: "56dp"
+                                on_tab_press:
+                                    root.manager.transition = NoTransition() 
+                                    root.manager.current = 'itemlost'
+                            MDBottomNavigationItem:
+                                name:"PostItemScreen"
+                                icon: "plus-circle-outline"
+                                text: "Post Item" 
+                                size_hint_y: None
+                                height: "56dp"  
+                                on_tab_press:
+                                    root.manager.transition = NoTransition() 
+                                    root.manager.current = 'post'  
+                           
+                            MDBottomNavigationItem:
+                                name:"message"
+                                icon: "message-reply-text-outline"
+                                text: "Messages"
+                                size_hint_y: None
+                                height: "56dp" 
+                                on_tab_press:
+                                    root.manager.transition = NoTransition()
+                                    root.manager.current = 'user_list' 
+                                
+        MDNavigationDrawer: 
+            id: nav_drawer 
+            BoxLayout:  
+                orientation: 'vertical'
+                
+                Image:
+                    source: 'crimsonfinds.jpg'                                                                                        
+                            
+                ScrollView:
+                    MDList:
+                        OneLineIconListItem: 
+                            text: "Profile" 
+                            on_press: 
+                                root.close_drawer()
+                                root.manager.current = 'user_profile'                      
+                            IconLeftWidget:
+                                icon: "account"
+                                on_press: 
+                                    root.close_drawer()
+                                    root.manager.current ='Profile'
+                        OneLineIconListItem: 
+                            text: "About us"
+                            on_press: 
+                                root.close_drawer()
+                                root.manager.current ='AboutUs'                             
+                            IconLeftWidget:
+                                icon: "information"
+                                on_press:
+                                    root.close_drawer() 
+                                    root.manager.current ='AboutUs'
+                        OneLineIconListItem: 
+                            text: "Logout"
+                            on_press:
+                                root.close_drawer() 
+                                app.logout()                         
+                            IconLeftWidget:
+                                icon: "logout"
+                                on_press:
+                                    root.close_drawer() 
+                                    app.logout()
+                        OneLineIconListItem:
+                            text: "Exit"
+                            on_press: app.stop()
+                            IconLeftWidget:
+                                icon: 'exit-to-app'
+                                on_press: app.stop()
+                                
+<LoginScreen>:
+    name: 'login'
+    FloatLayout:
+        Image:
+            source: 'img/b5658a4e-b43f-4e07-9608-810045e47ecf.jpg' 
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: (1, 1)
+            opacity: 1
+        Image:
+            source: 'img/cfnobg.png'
+            size_hint_x: None
+            pos: (self.parent.width - self.width - dp(10), self.parent.height - self.height - dp(10))  # Position at the top-right corner with padding
+            opacity: 1
+            size_hint_y: None  # Not controlling the height via size_hint
+            height: self.width 
+            width: dp(100)    
+        MDLabel:
+            text: 'Login'
+            halign: 'center'
+            font_name:'fonts\Poppins-ExtraBold.ttf'
+            font_size: '60sp'
+            color: 1, 1, 1, 0.5       
+            size_hint_y: None
+            height: self.texture_size[1]
+            width: self.texture_size[0]
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height / 2 - self.height / 2 + dp(100))    
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            size_hint_y: None
+            height: self.minimum_height
+            padding: [10, 0, 10, 0]
+            pos_hint: {"center_x": 0.6, "y": 0.3}
+            
+            MDTextField:
+                id: username_input
+                hint_text: "Username"
+                helper_text: "Enter your username"
+                helper_text_mode: "on_focus"
+                icon_right: "account"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]
+                
+            MDTextField:
+                id: password_input
+                hint_text: "Password"
+                password: True
+                helper_text: "Enter your password"
+                helper_text_mode: "on_focus"
+                icon_right: "eye-off"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]  
+                on_icon_right: app.toggle_password_visibility()
+
+        MDCard:
+            size_hint_x: None
+            size_hint_y: None
+            width: dp(260)
+            height: dp(50)
+            radius: [25]  # Adjust radius to make the card round
+            md_bg_color: [156/255, 37/255, 37/255, 0.4] #9
+            padding: [10, 10]
+            pos_hint: {"center_x": 0.5}
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height * 0.2)
+            on_release: app.login(root.ids.username.text, root.ids.password.text)
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1, 1)
+                padding: [10, 0]
+                spacing: 0
+                pos_hint: {"center_x": 0.5, "center_y": 0.1}
+                    
+                MDRaisedButton:
+                    text: "Login"
+                    elevation: 0
+                    size_hint_y: None
+                    height: dp(40)
+                    md_bg_color: [156/255, 37/255, 37/255, 0.1]   # Match the button color with the card color
+                    text_color: [1,1,1, 0.8]
+                    font_size: '30sp'
+                    size_hint_x: None
+                    width: dp(240)  # Width to fit within the card with padding
+                    pos_hint: {"center_x": 0.5}
+                    on_release: app.login()
+        MDTextButton: 
+            text: "[color=000000]Don't have an account?[/color] [u][b]Sign up here[/b][/u]"
+            markup: True
+            size_hint_y: None
+            pos_hint: {"center_x": 0.5}
+            height: dp(40)
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height * 0.1)
+            on_press: app.change_screen('signup')
+        
+
+<SignupScreen>:
+    name: 'signup'
+    FloatLayout:
+        Image:
+            source: 'img/b5658a4e-b43f-4e07-9608-810045e47ecf.jpg' 
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: (1, 1)
+            opacity: 1
+        Image:
+            source: 'img/cfnobg.png'
+            size_hint_x: None
+            pos: (self.parent.width - self.width - dp(10), self.parent.height - self.height - dp(10))  # Position at the top-right corner with padding
+            opacity: 1
+            size_hint_y: None  # Not controlling the height via size_hint
+            height: self.width 
+            width: dp(100)    
+        MDLabel:
+            text: 'Sign Up'
+            halign: 'left'
+            padding: '32dp'
+            font_name:'fonts\Poppins-ExtraBold.ttf'
+            font_size: '55sp'
+            color: 1, 1, 1, 0.5       
+            size_hint_y: None
+            height: self.texture_size[1]
+            width: self.texture_size[0]
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height / 2 - self.height / 2 + dp(190))    
+                
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 7
+            size_hint_y: None
+            height: self.minimum_height
+            padding: [10, 0, 10, 0]
+            pos_hint: {"center_x": 0.6, "y": 0.3}
+
+            MDTextField:
+                id: new_username_input
+                hint_text: "Username"
+                helper_text_mode: "on_focus"
+                icon_right: "account"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]
+                
+            MDTextField:
+                id: email
+                hint_text: "Email"
+                helper_text: "Enter your email"
+                helper_text_mode: "on_focus"
+                icon_right: "email"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]
+                
+            MDTextField:
+                id: new_password_input
+                hint_text: "Password"
+                password: True
+                helper_text: "Enter your password"
+                helper_text_mode: "on_focus"
+                icon_right: "eye-off"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]
+            MDTextField:
+                id: confirmpassword
+                hint_text: "Confirm Password"
+                password: True
+                helper_text: "Confirm your password"
+                helper_text_mode: "on_focus"
+                icon_right: "eye-off"
+                size_hint_x: None
+                width: 260
+                text_color_focus: [1, 1, 1, 1]
+                background_color: [1, 1, 1, 1]
+                line_color_normal: [1, 1, 1, 1]  
+                line_color_focus: [1, 1, 1, 1]  
+                fill_color: [1, 1, 1, 1]
+                hint_text_color: [1,1,1, 1]
+                hint_text_color_normal: [1,1,1, 1]
+                helper_text_color_focus: [1,1,1,1]
+                icon_color: [1, 1,1, 1]
+                icon_right_color: [1,1,1,1]
+                icon_right_color_focus: [1,1,1,1]
+                hint_text_color_focus: [1,1,1, 1]    
+        MDCard:
+            size_hint_x: None
+            size_hint_y: None
+            width: dp(260)
+            height: dp(50)
+            radius: [25]  # Adjust radius to make the card round
+            md_bg_color: [156/255, 37/255, 37/255, 0.4] #9
+            padding: [10, 10]
+            pos_hint: {"center_x": 0.5}
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height * 0.2)        
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1, 1)
+                padding: [10, 0]
+                spacing: 0
+                pos_hint: {"center_x": 0.5, "center_y": 0.1}
+                MDRaisedButton:
+                    text: "Sign Up"
+                    font_name:'fonts\Poppins-Bold.ttf'
+                    elevation: 0
+                    size_hint_y: None
+                    height: dp(40)
+                    md_bg_color: [156/255, 37/255, 37/255, 0.1]   # Match the button color with the card color
+                    text_color: [1,1,1, 0.8]
+                    font_size: '27sp'
+                    size_hint_x: None
+                    width: dp(240)  # Width to fit within the card with padding
+                    pos_hint: {"center_x": 0.5}
+                    on_release: app.signup()
+        MDTextButton: 
+            text: "[color=000000]Already have an account?[/color] [u][b]Login here[/b][/u]"
+            markup: True
+            size_hint_y: None
+            pos_hint: {"center_x": 0.5, "y": .1}
+            height: dp(40)
+            on_press: app.change_screen('login')
+            pos: (self.parent.width / 2 - self.width / 2, self.parent.height * 0.1)
+
+
+
+
+
+<UserListScreen>:
+    name: 'user_list'
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: "Select User to message"
+            md_bg_color: app.theme_cls.primary_color
+            right_action_items: [["logout", lambda x: app.logout()]]
+            left_action_items: [["refresh", lambda x: app.fetch_users()]]
+            md_bg_color: [1,0,0, 1]
+        MDBoxLayout:
+            orientation: 'vertical'
+
+            ScrollView:
+                MDList:
+                    id: user_list
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: "56dp"
+            MDBottomNavigation:
+                id: bottom_nav
+                text_color_normal: [0, 0, 0, 1]  # Normal text color
+                text_color_active: [0, 0, 1, 1]
+                pos_hint: {"bottom": 0}
+                padding: "0dp"
+                spacing: "0dp"
+                md_bg_color: 1, 1, 1, 1
+                MDBottomNavigationItem:
+                    name: "home"
+                    icon: "home-outline"
+                    text: "Home"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press: 
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'main'
+                MDBottomNavigationItem:
+                    name:"ItemLostScreen"
+                    icon: "help-box-multiple-outline"
+                    text: "Item Lost"
+                    size_hint_y: None
+                    height: "56dp"
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'itemlost'
+                MDBottomNavigationItem:
+                    name:"PostItemScreen"
+                    icon: "plus-circle-outline"
+                    text: "Post Item" 
+                    size_hint_y: None
+                    height: "56dp"  
+                    on_tab_press:
+                        root.manager.transition = NoTransition() 
+                        root.manager.current = 'post'  
+                
+                MDBottomNavigationItem:
+                    name:"message"
+                    icon: "message-reply-text-outline"
+                    text: "Messages"
+                    size_hint_y: None
+                    height: "56dp" 
+                    on_tab_press:
+                        root.manager.transition = NoTransition()
+                        root.manager.current = 'user_list'
+            
+                
+
+<MessagingScreen>:
+    name: 'messaging'
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: "Messaging"
+            left_action_items: [["arrow-left", lambda x: app.change_screen('user_list')]]
+            md_bg_color: [1,0,0,1]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+
+            ScrollView:
+                MDList:
+                    id: messages_list
+
+            MDTextField:
+                id: message_input
+                hint_text: "Type your message here"
+
+            MDRaisedButton:
+                text: "Send"
+                on_release: app.send_message()
+                md_bg_color: [1,0,0,1]
